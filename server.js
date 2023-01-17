@@ -1,5 +1,5 @@
 // Setup Initialization (from pull): 
-// 0. ensure git upstream is set up, delete all files except server.js
+// 0. delete all files except server.js, ensure git upstream is set up
 // 1. npm init (creates package.json)
 // 2. npm i dotenv mongoose express cors morgan (creates node modules)
 // 3. npm i --save-dev nodemon
@@ -24,40 +24,39 @@
 // ------- (if needed) git merge master - (combines master to development) 
 
 // ----------------------------------------------------------------------------------------------
-/// Dependencies
-const express = require("express");
-require("dotenv").config();
-const app = express();
-const { PORT = 4000, MONGODB_URL } = process.env;
-const mongoose = require("mongoose");
-const cors = require("cors");
-const morgan = require("morgan");
+// Dependencies----------
+require('dotenv').config(); // get .env variables
+const express = require('express'); // import express
+const mongoose = require("mongoose"); // import mongoose
+const morgan = require("morgan"); // import morgan
+const cors = require('cors') // import cors 
 
-///DATABASE connection///
-mongoose.connect(MONGODB_URL, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-});
+// Initialize the Express App----------
+const app = express() // create application object
 
-/////Middleware//////
-app.use(cors()); // to prevent cors errors, open access to all origins
-app.use(morgan("dev")); // logging
-app.use(express.json()); // parse json bodies
+// Configure App Settings----------
+const {PORT = 4000, MONGODB_URL} = process.env; // pull PORT and MONGODB from .env, give default value of 4000
 
+// DATABASE CONNECTION----------------
+mongoose.connect(MONGODB_URL); // connect to mongoDB
 
-//////Models//////
+mongoose.connection // mongo status listeners
+    .on("open", () => console.log("Connected to MongoDB"))
+    .on("error", (error) => console.log('Error with MongoDB:' + error.message));
 
+// Mount Middleware----------
+app.use(cors()) // to prevent cors errors, open access to all origins
+app.use(morgan("dev")) // logging
+app.use(express.json()) // creates "req.body"
+// do not use app.use(express.urlencoded) (ONLY FOR Express serving HTML not JSON)
+ 
+// MODELS (Set up model)----------------
+const itemSchema = new mongoose.Schema({
+    name: String,
+    image: String,
+    description: String,
+    price: Number
+}, {timestamps: true})
 
+const Item = mongoose.model('Item', itemSchema)
 
-//////////////////
-
-///Connection Events////
-mongoose.connection
-    .on("open", () => console.log("You are connected to mongoose"))
-    .on("close", () => console.log("You are disconnected from mongoose"))
-    .on("error", (error) => console.log(error));
-
-
-
-/////Listener////////
-app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
