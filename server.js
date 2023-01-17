@@ -60,3 +60,37 @@ const itemSchema = new mongoose.Schema({
 
 const Item = mongoose.model('Item', itemSchema)
 
+// ROUTES--------------------------------------------------
+app.get("/", (req, res) => {
+    res.send("hello world");
+});
+
+// Index
+app.get('/rummage', async (req,res) => { // New, shorter syntax using async await
+
+    // Try/catch statement catches error before it crashes program
+    try{ 
+        const item = await Item.find({}); // Instead of People.find({}, (err, people))
+        res.json(item); 
+    } catch (error) {
+        console.log('error: ', error);
+        res.json({error: 'something went wrong - check console'})
+    }
+})
+
+// Create
+app.post('/rummage', async (req, res) => {
+    try {
+        const item = await Item.create(req.body);
+        res.json(item);
+    } catch (error) {
+        console.log('error: ', error);
+        res.json({error: 'something went wrong - check console'})
+    }
+})
+
+
+// LISTENER---------- (Tell Express to Listen)
+app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
+
+
