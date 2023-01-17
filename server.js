@@ -89,6 +89,29 @@ app.post('/rummage', async (req, res) => {
     }
 })
 
+// Delete
+app.delete('/rummage/:id', async (req, res) => {
+    try {
+        res.json(await Item.findByIdAndDelete(req.params.id));
+    } catch (error) {
+        console.log('error: ', error);
+        res.json({error: 'something went wrong - check console'})
+    }
+})
+
+// Update
+app.put('/rummage/:id', async (req, res) => {
+    try {
+        res.json(await Item.findByIdAndUpdate(
+            req.params.id, 
+            req.body, 
+            {new: true} 
+        ));
+    } catch (error){
+        console.log('error: ', error)
+        res.json({error: 'something went wrong - check console'});
+    }
+})
 
 // LISTENER---------- (Tell Express to Listen)
 app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
