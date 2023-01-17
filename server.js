@@ -1,11 +1,12 @@
 // Setup Initialization (from pull): 
-// 0. delete all files except server.js, ensure git upstream is set up
+// 0. delete all files except server.js, set up git upstream in "backend" folder
 // 1. npm init (creates package.json)
 // 2. npm i dotenv mongoose express cors morgan (creates node modules)
 // 3. npm i --save-dev nodemon
-// 4. touch .env create port and MONGODB_URL
+// 4. touch .env create port and MONGODB_URL (ask moe)
 
-// do NOT want to push package files, node files, or .env up to github 
+// do NOT want to push package files, node files, or .env up to github
+// only push server.js to github
 
 // ---------To push changes out upstream
 // 1. git add ""
