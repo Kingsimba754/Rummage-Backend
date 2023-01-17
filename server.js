@@ -1,11 +1,12 @@
 // Setup Initialization (from pull): 
-// 0. ensure git upstream is set up, delete all files except server.js
+// 0. delete all files except server.js, set up git upstream in "backend" folder
 // 1. npm init (creates package.json)
 // 2. npm i dotenv mongoose express cors morgan (creates node modules)
 // 3. npm i --save-dev nodemon
-// 4. touch .env create port and MONGODB_URL
+// 4. touch .env create port and MONGODB_URL (ask moe)
 
-// do NOT want to push package files, node files, or .env up to github 
+// do NOT want to push package files, node files, or .env up to github
+// only push server.js to github
 
 // ---------To push changes out upstream
 // 1. git add ""
@@ -24,40 +25,96 @@
 // ------- (if needed) git merge master - (combines master to development) 
 
 // ----------------------------------------------------------------------------------------------
-/// Dependencies
-const express = require("express");
-require("dotenv").config();
-const app = express();
-const { PORT = 4000, MONGODB_URL } = process.env;
-const mongoose = require("mongoose");
-const cors = require("cors");
-const morgan = require("morgan");
+// Dependencies----------
+require('dotenv').config(); // get .env variables
+const express = require('express'); // import express
+const mongoose = require("mongoose"); // import mongoose
+const morgan = require("morgan"); // import morgan
+const cors = require('cors') // import cors 
 
-///DATABASE connection///
-mongoose.connect(MONGODB_URL, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
+// Initialize the Express App----------
+const app = express() // create application object
+
+// Configure App Settings----------
+const {PORT = 4000, MONGODB_URL} = process.env; // pull PORT and MONGODB from .env, give default value of 4000
+
+// DATABASE CONNECTION----------------
+mongoose.connect(MONGODB_URL); // connect to mongoDB
+
+mongoose.connection // mongo status listeners
+    .on("open", () => console.log("Connected to MongoDB"))
+    .on("error", (error) => console.log('Error with MongoDB:' + error.message));
+
+// Mount Middleware----------
+app.use(cors()) // to prevent cors errors, open access to all origins
+app.use(morgan("dev")) // logging
+app.use(express.json()) // creates "req.body"
+// do not use app.use(express.urlencoded) (ONLY FOR Express serving HTML not JSON)
+ 
+// MODELS (Set up model)----------------
+const itemSchema = new mongoose.Schema({
+    name: String,
+    image: String,
+    description: String,
+    price: Number
+}, {timestamps: true})
+
+const Item = mongoose.model('Item', itemSchema)
+
+// ROUTES--------------------------------------------------
+app.get("/", (req, res) => {
+    res.send("hello world");
 });
 
-/////Middleware//////
-app.use(cors()); // to prevent cors errors, open access to all origins
-app.use(morgan("dev")); // logging
-app.use(express.json()); // parse json bodies
+// Index
+app.get('/rummage', async (req,res) => { // New, shorter syntax using async await
 
+    // Try/catch statement catches error before it crashes program
+    try{ 
+        const item = await Item.find({}); // Instead of People.find({}, (err, people))
+        res.json(item); 
+    } catch (error) {
+        console.log('error: ', error);
+        res.json({error: 'something went wrong - check console'})
+    }
+})
 
-//////Models//////
+// Create
+app.post('/rummage', async (req, res) => {
+    try {
+        const item = await Item.create(req.body);
+        res.json(item);
+    } catch (error) {
+        console.log('error: ', error);
+        res.json({error: 'something went wrong - check console'})
+    }
+})
 
+// Delete
+app.delete('/rummage/:id', async (req, res) => {
+    try {
+        res.json(await Item.findByIdAndDelete(req.params.id));
+    } catch (error) {
+        console.log('error: ', error);
+        res.json({error: 'something went wrong - check console'})
+    }
+})
 
+// Update
+app.put('/rummage/:id', async (req, res) => {
+    try {
+        res.json(await Item.findByIdAndUpdate(
+            req.params.id, 
+            req.body, 
+            {new: true} 
+        ));
+    } catch (error){
+        console.log('error: ', error)
+        res.json({error: 'something went wrong - check console'});
+    }
+})
 
-//////////////////
-
-///Connection Events////
-mongoose.connection
-    .on("open", () => console.log("You are connected to mongoose"))
-    .on("close", () => console.log("You are disconnected from mongoose"))
-    .on("error", (error) => console.log(error));
-
-
-
-/////Listener////////
+// LISTENER---------- (Tell Express to Listen)
 app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
+
+
