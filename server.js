@@ -62,7 +62,7 @@ const itemSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Item = mongoose.model("Item", itemSchema);
+const Items = mongoose.model('Item', itemSchema)
 
 // ROUTES--------------------------------------------------
 app.get("/", (req, res) => {
@@ -73,48 +73,50 @@ app.get("/", (req, res) => {
 app.get("/rummage", async (req, res) => {
   // New, shorter syntax using async await
 
-  // Try/catch statement catches error before it crashes program
-  try {
-    const item = await Item.find({}); // Instead of People.find({}, (err, people))
-    res.json(item);
-  } catch (error) {
-    console.log("error: ", error);
-    res.json({ error: "something went wrong - check console" });
-  }
-});
+    // Try/catch statement catches error before it crashes program
+    try{ 
+        const items = await Items.find({}); // Instead of People.find({}, (err, items))
+        res.json(items); 
+    } catch (error) {
+        console.log('error: ', error);
+        res.json({error: 'something went wrong - check console'})
+    }
+})
 
 // Create
-app.post("/rummage", async (req, res) => {
-  try {
-    const item = await Item.create(req.body);
-    res.json(item);
-  } catch (error) {
-    console.log("error: ", error);
-    res.json({ error: "something went wrong - check console" });
-  }
-});
+app.post('/rummage', async (req, res) => {
+    try {
+        const item = await Items.create(req.body);
+        res.json(item);
+    } catch (error) {
+        console.log('error: ', error);
+        res.json({error: 'something went wrong - check console'})
+    }
+})
 
 // Delete
-app.delete("/rummage/:id", async (req, res) => {
-  try {
-    res.json(await Item.findByIdAndDelete(req.params.id));
-  } catch (error) {
-    console.log("error: ", error);
-    res.json({ error: "something went wrong - check console" });
-  }
-});
+app.delete('/rummage/:id', async (req, res) => {
+    try {
+        res.json(await Items.findByIdAndDelete(req.params.id));
+    } catch (error) {
+        console.log('error: ', error);
+        res.json({error: 'something went wrong - check console'})
+    }
+})
 
 // Update
-app.put("/rummage/:id", async (req, res) => {
-  try {
-    res.json(
-      await Item.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    );
-  } catch (error) {
-    console.log("error: ", error);
-    res.json({ error: "something went wrong - check console" });
-  }
-});
+app.put('/rummage/:id', async (req, res) => {
+    try {
+        res.json(await Items.findByIdAndUpdate(
+            req.params.id, 
+            req.body, 
+            {new: true} 
+        ));
+    } catch (error){
+        console.log('error: ', error)
+        res.json({error: 'something went wrong - check console'});
+    }
+})
 
 // LISTENER---------- (Tell Express to Listen)
 app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
