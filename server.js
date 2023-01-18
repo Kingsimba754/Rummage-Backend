@@ -56,8 +56,8 @@ const itemSchema = new mongoose.Schema(
   {
     name: String,
     image: String,
-    description: String,
-    price: Number,
+    Description: String,
+    Price: Number,
   },
   { timestamps: true }
 );
