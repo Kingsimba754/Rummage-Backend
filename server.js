@@ -62,12 +62,9 @@ const itemSchema = new mongoose.Schema({
 const Items = mongoose.model('Item', itemSchema)
 
 // ROUTES--------------------------------------------------
-app.get("/", (req, res) => {
-    res.send("hello world");
-});
 
 // Index
-app.get('/rummage', async (req,res) => { // New, shorter syntax using async await
+app.get('/', async (req,res) => { // New, shorter syntax using async await
 
     // Try/catch statement catches error before it crashes program
     try{ 
@@ -80,7 +77,7 @@ app.get('/rummage', async (req,res) => { // New, shorter syntax using async awai
 })
 
 // Create
-app.post('/rummage', async (req, res) => {
+app.post('/', async (req, res) => {
     try {
         const item = await Items.create(req.body);
         res.json(item);
@@ -91,7 +88,7 @@ app.post('/rummage', async (req, res) => {
 })
 
 // Delete
-app.delete('/rummage/:id', async (req, res) => {
+app.delete('/:id', async (req, res) => {
     try {
         res.json(await Items.findByIdAndDelete(req.params.id));
     } catch (error) {
@@ -101,7 +98,7 @@ app.delete('/rummage/:id', async (req, res) => {
 })
 
 // Update
-app.put('/rummage/:id', async (req, res) => {
+app.put('/:id', async (req, res) => {
     try {
         res.json(await Items.findByIdAndUpdate(
             req.params.id, 
