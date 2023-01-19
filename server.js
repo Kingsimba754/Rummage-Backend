@@ -67,7 +67,6 @@ const Items = mongoose.model('Item', itemSchema)
 // ROUTES--------------------------------------------------
 
 // Index
-<<<<<<< HEAD
 app.get('/', async (req,res) => { // New, shorter syntax using async await
 
 app.get("/", (req, res) => {
@@ -76,9 +75,6 @@ app.get("/", (req, res) => {
 })
 // Index
 app.get("/rummage", async (req, res) => {
-=======
-app.get("/", async (req, res) => {
->>>>>>> b16c6fe98cafc0d67c2d4f517906718505ce7fa6
   // New, shorter syntax using async await
 
 
