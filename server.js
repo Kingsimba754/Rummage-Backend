@@ -29,9 +29,9 @@ const cors = require("cors"); // import cors
 // Initialize the Express App----------
 const app = express(); // create application object
 // Configure App Settings----------
-const { PORT = 4000, MONGODB_URL } = process.env; // pull PORT and MONGODB from .env, give default value of 4000
+const { PORT = 4000, MONGODB_URI } = process.env; // pull PORT and MONGODB from .env, give default value of 4000
 // DATABASE CONNECTION----------------
-mongoose.connect(MONGODB_URL); // connect to mongoDB
+mongoose.connect(MONGODB_URI); // connect to mongoDB
 mongoose.connection // mongo status listeners
   .on("open", () => console.log("Connected to MongoDB"))
   .on("error", (error) => console.log("Error with MongoDB:" + error.message));
