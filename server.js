@@ -75,7 +75,7 @@ app.get("/", (req, res) => {
 });
 })
 // Index
-app.get("/", async (req, res) => {
+app.get("/rummage", async (req, res) => {
   // New, shorter syntax using async await
 
 
